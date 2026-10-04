@@ -4,72 +4,47 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0c1119">
-  <meta name="description" content="Decrypt RestedXP exports in your browser, download plain-text guides, and re-encrypt them for a BattleTag.">
-  <title>RXP4ALL — Decrypt & Re-encrypt Guides</title>
+  <meta name="description" content="Enter your BattleTag, generate a RestedXP import code, and copy it straight into the addon in game.">
+  <title>RXP4ALL — BattleTag Import Code</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230c1119'/%3E%3Cpath d='M11 14v-3a5 5 0 0 1 10 0' fill='none' stroke='%23edbd66' stroke-width='3' stroke-linecap='round'/%3E%3Crect x='7' y='14' width='18' height='13' rx='3' fill='%23edbd66'/%3E%3Cpath d='M16 19v4' stroke='%230c1119' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="./styles.css">
-  <script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./generator.css">
+  <script type="module" src="./generator.js"></script>
 </head>
 <body>
-  <a class="skip" href="#source-tag">Skip to input</a>
+  <a class="skip" href="#battle-tag">Skip to BattleTag</a>
   <header class="header">
-    <a class="brand" href="./" aria-label="RXP4ALL home"><span class="brand-mark">RXP</span><span>Guide Workbench</span></a>
-    <a class="source-link" href="https://github.com/nebelhorn91/rxp4all" target="_blank" rel="noopener noreferrer">Source code <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M21 3l-9 9M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></a>
+    <a class="brand" href="./" aria-label="RXP4ALL home"><span class="brand-symbol"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5L2 12l6 7M16 5l6 7-6 7M14 4l-4 16"/></svg></span>RXP4ALL</a>
+    <nav aria-label="Navigation"><a href="./advanced.html">Advanced tools</a><a href="https://github.com/nebelhorn91/rxp4all" target="_blank" rel="noopener noreferrer">Source code</a></nav>
   </header>
   <main>
-    <div class="page-heading"><div><p class="eyebrow">RESTEDXP · GUIDE WORKBENCH</p><h1>Your guides. In plain text.</h1><p class="intro">Open an export, decrypt it, and re-encrypt it when needed.</p></div><span class="local-badge"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Local in your browser</span></div>
-    <div class="workspace">
-      <section class="panel input-panel" aria-labelledby="input-heading">
-        <div class="panel-heading"><span class="step">01</span><h2 id="input-heading">Open an export</h2></div>
-        <div class="source-tabs" role="tablist" aria-label="Input method">
-          <button id="tab-file" class="tab active" role="tab" aria-selected="true" aria-controls="file-panel" tabindex="0">File</button>
-          <button id="tab-text" class="tab" role="tab" aria-selected="false" aria-controls="text-panel" tabindex="-1">Import text</button>
-        </div>
-        <div id="file-panel" role="tabpanel" aria-labelledby="tab-file">
-          <input id="file-input" type="file" accept=".txt,text/plain" class="visually-hidden" tabindex="-1" aria-label="Choose a RestedXP file">
-          <button class="dropzone" id="file-picker" type="button">
-            <span class="upload-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M12 17V11M9 14l3-3 3 3"/></svg></span>
-            <span id="file-label" class="file-label">Choose a guide file</span>
-            <span id="file-hint" class="muted">or drop it here · .txt up to 20 MiB</span>
-          </button>
-        </div>
-        <div id="text-panel" role="tabpanel" aria-labelledby="tab-text" hidden>
-          <label class="visually-hidden" for="import-text">RestedXP import text</label>
-          <textarea id="import-text" class="import-text" placeholder="Paste your RestedXP import text here …" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
-          <p class="field-hint">Paste the complete import text.</p>
-        </div>
-        <form id="decrypt-form" novalidate>
-          <label for="source-tag">Original BattleTag</label>
-          <input id="source-tag" class="text-input" type="text" placeholder="Player#1234" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="100" aria-describedby="tag-help">
-          <p class="field-hint" id="tag-help">The BattleTag this file was created for. You need it to decrypt the file.</p>
-          <button id="decrypt-button" class="button primary" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="11" rx="2"/><path d="M8 11V6a4 4 0 0 1 8 0M12 15v3"/></svg><span id="decrypt-label">Decrypt</span></button>
-        </form>
-        <div id="error" class="message error" role="alert" hidden></div>
-        <div id="processing" class="message processing" role="status" hidden><span class="spinner" aria-hidden="true"></span><span id="processing-label">Decrypting file …</span></div>
-        <p class="privacy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3zM8 12l3 3 5-6"/></svg>Your files and BattleTags stay on your device.</p>
-      </section>
-      <section class="panel output-panel" aria-labelledby="output-heading" aria-busy="false">
-        <div class="panel-heading output-heading"><div class="heading-group"><span class="step">02</span><h2 id="output-heading">Plain text</h2></div><span id="result-badge" class="result-badge" hidden>Decrypted</span></div>
-        <div id="empty-output" class="empty-output"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="6" width="30" height="36" rx="3"/><path d="M17 16h14M17 23h14M17 30h9"/></svg><h3>Your guide will appear here</h3><p>Open an export and decrypt it with the original BattleTag.</p></div>
-        <div id="decoded-output" hidden>
-          <div class="stats" aria-live="polite"><span><strong id="guide-count">0</strong> <span id="guide-noun">Guides</span></span><span id="result-size"></span><span>Version <strong id="version"></strong></span></div>
-          <label for="guide-select">Select a guide</label>
-          <div class="guide-controls"><select id="guide-select" class="text-input"></select><button id="copy-guide" class="button small secondary" type="button" aria-label="Copy the selected guide"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div>
-          <div class="code-frame"><div class="code-heading"><span id="preview-title">Guide.txt</span><span>UTF-8</span></div><pre id="guide-preview" tabindex="0" aria-label="Decrypted guide in plain text"></pre></div>
-          <p id="preview-note" class="field-hint" hidden>This preview is shortened. Copying and downloads include the complete guide.</p>
-          <div class="download-actions"><button id="download-guide" class="button secondary" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 16v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>This guide .txt</button><button id="download-zip" class="button secondary" type="button">All guides .zip</button></div>
-        </div>
-      </section>
-    </div>
-    <section class="panel encrypt-panel" aria-labelledby="encrypt-heading">
-      <div class="encrypt-description"><div class="panel-heading"><span class="step">03</span><h2 id="encrypt-heading">Re-encrypt</h2><span class="optional">Optional</span></div><p>Create a new import file from the decrypted guides for your destination BattleTag.</p></div>
-      <form id="encrypt-form" novalidate><div class="target-field"><label for="target-tag">Destination BattleTag</label><input id="target-tag" class="text-input" type="text" placeholder="NewPlayer#5678" maxlength="100" spellcheck="false" autocomplete="off" autocapitalize="off"></div><button id="encrypt-button" class="button secondary" type="submit" disabled>Re-encrypt</button></form>
-      <div id="encrypted-output" class="encrypted-output" hidden><div><strong>New import file ready</strong><p id="encrypted-details"></p></div><div class="download-actions"><button id="copy-export" class="button secondary" type="button">Copy import text</button><button id="download-export" class="button primary" type="button">Download import file</button></div></div>
+    <section id="generator-card" class="generator-card" aria-labelledby="generator-heading" aria-busy="false">
+      <p class="eyebrow">RESTEDXP · IMPORT CODE</p>
+      <h1 id="generator-heading">Enter your BattleTag.</h1>
+      <p class="intro">Generate your import code, copy it, and paste it into RestedXP in game.</p>
+      <form id="generate-form" novalidate>
+        <label for="battle-tag">Your BattleTag</label>
+        <input id="battle-tag" class="field" type="text" placeholder="Player#1234" maxlength="100" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="battle-tag-help" autofocus>
+        <p id="battle-tag-help" class="field-help">Use your complete BattleTag, including the #number.</p>
+        <div class="pack-label"><label for="guide-pack">Guide pack</label><span id="pack-levels"></span></div>
+        <select id="guide-pack" class="field" aria-describedby="pack-levels"></select>
+        <button id="generate-button" class="button primary" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="11" width="16" height="11" rx="2"/><path d="M8 11V6a4 4 0 0 1 8 0M12 15v3"/></svg><span id="generate-label">Generate import code</span></button>
+      </form>
+      <div id="generator-error" class="message error" role="alert" hidden></div>
+      <div id="generator-loading" class="message loading" role="status" hidden><span class="spinner" aria-hidden="true"></span><span id="loading-label">Loading guide pack …</span></div>
+      <div id="generator-result" class="result" hidden>
+        <div class="result-heading"><h2>Your import code</h2><span class="ready">Ready</span></div>
+        <p id="result-meta" class="result-meta" aria-live="polite"></p>
+        <label for="import-code" class="visually-hidden">Complete RestedXP import code</label>
+        <textarea id="import-code" class="field code-field" rows="5" wrap="soft" readonly spellcheck="false" aria-describedby="result-help"></textarea>
+        <div class="result-actions"><button id="copy-code" class="button primary" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy import code</button><button id="download-code" class="button secondary" type="button">Download .txt</button></div>
+        <p id="result-help" class="result-help">Paste the complete code into the RestedXP import window in game. It is generated for the BattleTag shown above.</p>
+      </div>
+      <p class="privacy"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3zM8 12l3 3 5-6"/></svg>Your BattleTag stays in your browser.</p>
+      <noscript><p class="message error">Enable JavaScript to generate an import code.</p></noscript>
     </section>
-    <p class="format-note">Supports the export format used by restedxp-reencrypt. Compatibility with other RestedXP versions may vary.</p>
-    <noscript><p class="message error">Enable JavaScript to decrypt files locally.</p></noscript>
+    <p class="source-note">Guide packs are loaded from <a href="https://github.com/mkccl/restedxp-reencrypt" target="_blank" rel="noopener noreferrer">restedxp-reencrypt</a> and processed locally.<br>Need to decrypt your own file? Open <a href="./advanced.html">Advanced tools</a>.</p>
   </main>
-  <footer><span>RXP4ALL</span><span>No uploads · No saved BattleTags</span></footer>
-  <div id="toast" class="toast" role="status" hidden></div>
+  <footer><span>RXP4ALL</span><span>No saved BattleTags · Browser-only processing</span></footer>
+  <div id="generator-toast" class="toast" role="status" hidden></div>
 </body>
 </html>

@@ -3,5 +3,5 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "scripts": { "check": "node --check dist/app.js && node --check dist/crypto.js && node --check dist/processor.js && node --check dist/zip.js" }
+  "scripts": { "check": "node --check dist/generator.js && node --check dist/guide-packs.js && node --check dist/app.js && node --check dist/crypto.js && node --check dist/processor.js && node --check dist/zip.js" }
 }
