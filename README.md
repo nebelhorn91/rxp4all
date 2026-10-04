@@ -17,12 +17,6 @@ Midnight, TBC and WotLK exports are loaded directly from [mkccl/restedxp-reencry
 
 Your BattleTag is only used by the local Web Worker. It is not included in any network request, query string, browser storage, or analytics event. The source repository receives normal requests for the selected guide files.
 
-## Advanced tools
-
-Open **Advanced tools** to decrypt your own export, read the plain-text guides, download a guide as TXT or all guides as ZIP, and re-encrypt them for another BattleTag.
-
-The original BattleTag is required when decrypting your own file. This tool does not recover unknown BattleTags. Decrypted content is displayed as text and is never executed.
-
 ## Deployment
 
 Website: https://nebelhorn91.github.io/rxp4all/
@@ -41,8 +35,6 @@ Limits: 20 MiB import text, 64 MiB decompressed content, and 5,000 guides. A cur
 
 Run `npm run check` to check JavaScript syntax and `npm test` to test guide loading, Lua-literal extraction, metadata checks, missing or damaged sources, attribution, and account-specific import-code generation. The deployment workflow runs both before publishing.
 
-The advanced implementation was checked against the reference decoder using an export with 869 guides. Re-encryption, Unicode BattleTags, multi-block files, signed checksums, incorrect BattleTags, damaged files, and ZIP contents were verified.
-
 The generator was checked with all three actual source packs: Midnight (869 guides), TBC (263 guides), and WotLK (97 guides). Each generated code decodes to the same contents using the original reference decoder. Invalid inputs, source-network failures, caching, and omission of BattleTags from network requests were also checked.
 
 The Forever generator was checked with all 13 actual source files (46 guide entries). Its generated code was verified with the original reference decoder, including the preserved guide text and source attribution. Live in-game import requires the matching BattleTag and the Forever version of RestedXP.
@@ -51,6 +43,6 @@ The Forever generator was checked with all 13 actual source files (46 guide entr
 
 The export format, guide-pack metadata, and BattleTag key derivation follow the user-selected reference project [mkccl/restedxp-reencrypt](https://github.com/mkccl/restedxp-reencrypt), specifically `lib/rxp-crypto.ts` and `lib/guides.ts` at commit `d5d4816ca0f33279da3d51f0e271e9d90ff3b669`.
 
-The interface, native stream processing, Web Worker integration, validation, and ZIP export are implemented independently.
+The interface, native stream processing, Web Worker integration, and validation are implemented independently. The main page links to the original project in its navigation and attribution.
 
 The Forever guide texts are by RestedXP and are provided under the repository's [CC BY-NC-SA 4.0 license](https://github.com/RestedXP/RXPGuides/blob/b2cb0c5396ea9920098f2f439cf3d33155b17631/LICENSE). The website shows this attribution and includes source URLs, license information, and a packaging notice as comments in each generated Forever guide. No changes are made to the route text. Guide content retains its original license; import-code packaging does not change it.

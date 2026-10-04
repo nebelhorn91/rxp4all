@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check dist/generator.js && node --check dist/guide-packs.js && node --check dist/guide-source.js && node --check dist/app.js && node --check dist/crypto.js && node --check dist/processor.js && node --check dist/zip.js",
+    "check": "node --check dist/generator.js && node --check dist/guide-packs.js && node --check dist/guide-source.js && node --check dist/crypto.js && node --check dist/processor.js",
     "test": "node --test"
   }
 }
