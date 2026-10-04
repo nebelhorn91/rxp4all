@@ -1,5 +1,6 @@
-import {decryptExport, encryptGuides, normalizeTag, MAX_INPUT} from './crypto.js';
+import {decryptExport, encryptGuides, normalizeTag} from './crypto.js';
 import {GUIDE_PACKS} from './guide-packs.js';
+import {loadGuidePack} from './guide-source.js';
 let decoded = null;
 const cachedPacks = new Map();
 self.addEventListener('message', async ({data}) => {
@@ -11,15 +12,7 @@ self.addEventListener('message', async ({data}) => {
       if (!pack) throw new Error('Please choose a supported guide pack.');
       let source = cachedPacks.get(pack.id);
       if (!source) {
-        self.postMessage({id:data.id,type:'progress',progress:{stage:'loading'}});
-        let response;
-        try { response = await fetch(pack.url, {credentials:'omit',referrerPolicy:'no-referrer',cache:'force-cache'}); }
-        catch { throw new Error('The guide pack could not be loaded. Check your connection and try again.'); }
-        if (!response.ok) throw new Error(`The guide pack could not be loaded (HTTP ${response.status}). Please try again later.`);
-        const raw = await response.text();
-        if (raw.length > MAX_INPUT) throw new Error('The guide pack is too large.');
-        self.postMessage({id:data.id,type:'progress',progress:{stage:'generating'}});
-        source = await decryptExport(raw, pack.sourceTag);
+        source = await loadGuidePack(pack,progress=>self.postMessage({id:data.id,type:'progress',progress}));
         cachedPacks.clear();
         cachedPacks.set(pack.id, source);
       }

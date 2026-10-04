@@ -22,7 +22,19 @@ function invalidate() {
   $('generator-result').hidden=true; $('import-code').value=''; $('result-meta').textContent='';
 }
 function selectedPack() { return GUIDE_PACKS.find(pack=>pack.id===$('guide-pack').value); }
-function refreshPackLabel() { $('pack-levels').textContent=selectedPack()?.levels??''; }
+function refreshPackLabel() {
+  const pack=selectedPack();
+  $('pack-levels').textContent=pack?.levels??'';
+  $('pack-note').textContent=pack?.note??'';$('pack-note').hidden=!pack?.note;
+  $('source-repository').textContent=pack?.sourceName??'restedxp-reencrypt';
+  $('source-repository').href=pack?.sourceUrl??'https://github.com/mkccl/restedxp-reencrypt';
+  $('pack-attribution').hidden=!pack?.attribution;
+  if(pack?.attribution){
+    $('guide-creator').textContent=pack.attribution.creator;
+    $('guide-license').textContent=pack.attribution.license;
+    $('guide-license').href=pack.attribution.licenseUrl;
+  }
+}
 function process(tag,packId) {
   if(pending) return Promise.reject(new Error('Please wait for the current operation to finish.'));
   if(!worker){
